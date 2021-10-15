@@ -46,7 +46,21 @@ const addTask = async (task) => {
 }
 
 //Toggle Reminder
+const toggleReminder = async (id) => {
+  const taskToToggle = await fetchTask(id);
+  const updTask = {...taskToToggle, reminder: !taskToToggle.reminder};
+  const res = await fetch(`http://localhost:5000/tasks/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-type": "application/json"
+    },
+    body: JSON.stringify(updTask)
+  });
 
+  const data = await res.json();
+
+  setTasks(tasks.map((task) => task.id === id ? { ...task, reminder: !data.reminder } : task))
+}
 
   return (
     <Router>
@@ -55,9 +69,12 @@ const addTask = async (task) => {
       
       <Route path='/' exact render={(props) => (
         <>
-      {tasks.length > 0 ? (<Tasks tasks={tasks} />) : ("Nothing to show")}
+        {showAddTask && <AddTask onAdd={addTask}/>} 
+      {tasks.length > 0 ? (<Tasks tasks={tasks} onDelete={deleteTask} onToggle={toggleReminder} />) : ("Nothing to show")}
         </>
       )} />
+      <Route path='/about' component={About}/>
+      <Footer/>
     </div>
     </Router>
     
