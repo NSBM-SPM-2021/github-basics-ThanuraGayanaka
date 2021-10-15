@@ -32,7 +32,18 @@ const fetchTask = async (id) => {
 }
 
 //Add Task
+const addTask = async (task) => {
+  const res = await fetch("http://localhost:5000/tasks", {
+    method: "POST",
+    headers: {
+      "Content-type": "application/json"
+    },
+    body: JSON.stringify(task)
+  })
 
+  const data = await res.json()
+  setTasks([...tasks, data]);
+}
 
 //Toggle Reminder
 
